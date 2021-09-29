@@ -107,6 +107,12 @@ public class RSGroupBasedLoadBalancer implements RSGroupableBalancer {
   }
 
   @Override
+  public synchronized void updateBalancerLoadInfo(Map<TableName, Map<ServerName, List<RegionInfo>>>
+    loadOfAllTable){
+    internalBalancer.updateBalancerLoadInfo(loadOfAllTable);
+  }
+
+  @Override
   public void setClusterMetrics(ClusterMetrics sm) {
     this.clusterStatus = sm;
     if (internalBalancer != null) {
