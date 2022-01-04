@@ -358,10 +358,10 @@ public class ProfileServlet extends HttpServlet {
       try {
         return Output.valueOf(outputArg.trim().toUpperCase());
       } catch (IllegalArgumentException e) {
-        return Output.SVG;
+        return Output.HTML;
       }
     }
-    return Output.SVG;
+    return Output.HTML;
   }
 
   static void setResponseHeader(final HttpServletResponse response) {
