@@ -104,6 +104,7 @@ public class CallRunner {
       call.setStartTime(System.currentTimeMillis());
       if (call.getStartTime() > call.getDeadline()) {
         RpcServer.LOG.warn("Dropping timed out call: " + call);
+        this.rpcServer.getMetrics().callTimedOut();
         return;
       }
       this.status.setStatus("Setting up call");
