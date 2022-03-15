@@ -56,23 +56,10 @@ public interface RpcCallContext {
   Optional<User> getRequestUser();
 
   /**
-   * When an HBase client is used as a proxy for connecting to HBase, the
-   * {@link #getRequestUser()} will be the name of the proxy. This will be
-   * the name of the client who called the proxy.
-   * @return The upstream caller for this call
-   */
-  Optional<String> getUpstreamCaller();
-
-  /**
    * @return Current request's user name or not present if none ongoing.
    */
   default Optional<String> getRequestUserName() {
-    return getRequestUser()
-      .map(User::getShortName)
-      .map(userName -> getUpstreamCaller()
-        .map(upstreamCaller -> upstreamCaller + ".via." + userName)
-        .orElse(userName)
-      );
+    return getRequestUser().map(User::getShortName);
   }
 
   /**

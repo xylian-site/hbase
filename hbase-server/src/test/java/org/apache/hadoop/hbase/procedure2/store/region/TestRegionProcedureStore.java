@@ -258,10 +258,6 @@ public class TestRegionProcedureStore extends RegionProcedureStoreTestBase {
         return Optional.empty();
       }
 
-      @Override public Optional<String> getUpstreamCaller() {
-        return Optional.empty();
-      }
-
       @Override
       public InetAddress getRemoteAddress() {
         return null;
