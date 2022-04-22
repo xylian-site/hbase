@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.hadoop.hbase.CellScanner;
 import org.apache.hadoop.hbase.DoNotRetryIOException;
+import org.apache.hadoop.hbase.HBaseServerException;
 import org.apache.hadoop.hbase.exceptions.RegionMovedException;
 import org.apache.hadoop.hbase.io.ByteBuffAllocator;
 import org.apache.hadoop.hbase.io.ByteBufferListOutputStream;
@@ -309,6 +310,9 @@ public abstract class ServerCall<T extends ServerRpcConnection> implements RpcCa
       RegionMovedException rme = (RegionMovedException)t;
       exceptionBuilder.setHostname(rme.getHostname());
       exceptionBuilder.setPort(rme.getPort());
+    } else if (t instanceof HBaseServerException) {
+      HBaseServerException hse = (HBaseServerException) t;
+      exceptionBuilder.setServerOverloaded(hse.isServerOverloaded());
     }
     // Set the exception as the result of the method invocation.
     headerBuilder.setException(exceptionBuilder.build());
