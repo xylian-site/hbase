@@ -17,15 +17,22 @@
  */
 package org.apache.hadoop.hbase.client;
 
+import static org.apache.hadoop.hbase.HConstants.CLIENT_CONNECTION_REGISTRY_IMPL_CONF_KEY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import com.codahale.metrics.RatioGauge;
 import com.codahale.metrics.RatioGauge.Ratio;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseClassTestRule;
+import org.apache.hadoop.hbase.RegionLocations;
+import org.apache.hadoop.hbase.ServerName;
+import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.hbase.testclassification.ClientTests;
 import org.apache.hadoop.hbase.testclassification.MetricsTests;
 import org.apache.hadoop.hbase.testclassification.SmallTests;
@@ -35,9 +42,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
+import org.mockito.Mockito;
 import org.apache.hbase.thirdparty.com.google.protobuf.ByteString;
-
 import org.apache.hadoop.hbase.shaded.protobuf.ProtobufUtil;
 import org.apache.hadoop.hbase.shaded.protobuf.generated.ClientProtos.ClientService;
 import org.apache.hadoop.hbase.shaded.protobuf.generated.ClientProtos.GetRequest;
@@ -54,6 +60,8 @@ public class TestMetricsConnection {
   public static final HBaseClassTestRule CLASS_RULE =
       HBaseClassTestRule.forClass(TestMetricsConnection.class);
 
+  private static final String CLUSTER_ID = "foo";
+
   private static MetricsConnection METRICS;
   private static final ThreadPoolExecutor BATCH_POOL =
     (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
@@ -65,6 +73,67 @@ public class TestMetricsConnection {
   @AfterClass
   public static void afterClass() {
     METRICS.shutdown();
+  }
+
+  @Test
+  public void testMetricsConnectionScopeAsyncClient() throws IOException {
+    Configuration conf = new Configuration();
+    String scope = "testScope";
+    conf.setBoolean(MetricsConnection.CLIENT_SIDE_METRICS_ENABLED_KEY, true);
+
+    AsyncConnectionImpl impl = new AsyncConnectionImpl(conf, null, "foo", User.getCurrent());
+    Optional<MetricsConnection> metrics = impl.getConnectionMetrics();
+    assertTrue("Metrics should be present", metrics.isPresent());
+    assertEquals(CLUSTER_ID + "@" + Integer.toHexString(impl.hashCode()), metrics.get().scope);
+    conf.set(MetricsConnection.METRICS_SCOPE_KEY, scope);
+    impl = new AsyncConnectionImpl(conf, null, "foo", User.getCurrent());
+
+    metrics = impl.getConnectionMetrics();
+    assertTrue("Metrics should be present", metrics.isPresent());
+    assertEquals(scope, metrics.get().scope);
+  }
+
+  @Test
+  public void testMetricsConnectionScopeBlockingClient() throws IOException {
+    Configuration conf = new Configuration();
+    String scope = "testScope";
+    conf.setBoolean(MetricsConnection.CLIENT_SIDE_METRICS_ENABLED_KEY, true);
+    conf.setClass(CLIENT_CONNECTION_REGISTRY_IMPL_CONF_KEY,
+      MockConnectionRegistry.class, ConnectionRegistry.class);
+
+    ConnectionImplementation impl = new ConnectionImplementation(conf, null,
+      User.getCurrent());
+    MetricsConnection metrics = impl.getConnectionMetrics();
+    assertNotNull("Metrics should be present", metrics);
+    assertEquals(CLUSTER_ID + "@" + Integer.toHexString(impl.hashCode()), metrics.scope);
+    conf.set(MetricsConnection.METRICS_SCOPE_KEY, scope);
+    impl = new ConnectionImplementation(conf, null, User.getCurrent());
+
+    metrics = impl.getConnectionMetrics();
+    assertNotNull("Metrics should be present", metrics);
+    assertEquals(scope, metrics.scope);
+  }
+
+  private static class MockConnectionRegistry implements ConnectionRegistry {
+
+    public MockConnectionRegistry(Configuration conf) {
+    }
+
+    @Override public CompletableFuture<RegionLocations> getMetaRegionLocations() {
+      return null;
+    }
+
+    @Override public CompletableFuture<String> getClusterId() {
+      return CompletableFuture.completedFuture(CLUSTER_ID);
+    }
+
+    @Override public CompletableFuture<ServerName> getActiveMaster() {
+      return null;
+    }
+
+    @Override public void close() {
+
+    }
   }
 
   @Test
