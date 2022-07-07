@@ -39,11 +39,11 @@ public class ReversedClientScanner extends ClientScanner {
    * {@link Scan}'s start row maybe changed.
    */
   public ReversedClientScanner(Configuration conf, Scan scan, TableName tableName,
-      ClusterConnection connection, RpcRetryingCallerFactory rpcFactory,
-      RpcControllerFactory controllerFactory, ExecutorService pool, int primaryOperationTimeout)
-      throws IOException {
+    ClusterConnection connection, RpcRetryingCallerFactory rpcFactory,
+    RpcControllerFactory controllerFactory, ExecutorService pool, int scanReadRpcTimeout,
+    int scannerTimeout, int primaryOperationTimeout) throws IOException {
     super(conf, scan, tableName, connection, rpcFactory, controllerFactory, pool,
-        primaryOperationTimeout);
+      scanReadRpcTimeout, scannerTimeout, primaryOperationTimeout);
   }
 
   @Override

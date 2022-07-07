@@ -68,15 +68,16 @@ class ScannerCallableWithReplicas implements RetryingCallable<Result[]> {
   private final RpcRetryingCaller<Result[]> caller;
   private final TableName tableName;
   private Configuration conf;
-  private int scannerTimeout;
+  private final int scannerTimeout;
+  private final int readRpcTimeout;
   private Set<ScannerCallable> outstandingCallables = new HashSet<>();
   private boolean someRPCcancelled = false; //required for testing purposes only
   private int regionReplication = 0;
 
   public ScannerCallableWithReplicas(TableName tableName, ClusterConnection cConnection,
-      ScannerCallable baseCallable, ExecutorService pool, int timeBeforeReplicas, Scan scan,
-      int retries, int scannerTimeout, int caching, Configuration conf,
-      RpcRetryingCaller<Result []> caller) {
+    ScannerCallable baseCallable, ExecutorService pool, int timeBeforeReplicas, Scan scan,
+    int retries, int readRpcTimeout, int scannerTimeout, int caching, Configuration conf,
+    RpcRetryingCaller<Result[]> caller) {
     this.currentScannerCallable = baseCallable;
     this.cConnection = cConnection;
     this.pool = pool;
@@ -88,6 +89,7 @@ class ScannerCallableWithReplicas implements RetryingCallable<Result[]> {
     this.retries = retries;
     this.tableName = tableName;
     this.conf = conf;
+    this.readRpcTimeout = readRpcTimeout;
     this.scannerTimeout = scannerTimeout;
     this.caller = caller;
   }
@@ -326,7 +328,7 @@ class ScannerCallableWithReplicas implements RetryingCallable<Result[]> {
       ResultBoundedCompletionService<Pair<Result[], ScannerCallable>> cs) {
     RetryingRPC retryingOnReplica = new RetryingRPC(currentScannerCallable);
     outstandingCallables.add(currentScannerCallable);
-    cs.submit(retryingOnReplica, scannerTimeout, currentScannerCallable.id);
+    cs.submit(retryingOnReplica, readRpcTimeout, scannerTimeout, currentScannerCallable.id);
   }
 
   private void addCallsForOtherReplicas(
@@ -340,7 +342,7 @@ class ScannerCallableWithReplicas implements RetryingCallable<Result[]> {
       setStartRowForReplicaCallable(s);
       outstandingCallables.add(s);
       RetryingRPC retryingOnReplica = new RetryingRPC(s);
-      cs.submit(retryingOnReplica, scannerTimeout, id);
+      cs.submit(retryingOnReplica, readRpcTimeout, scannerTimeout, id);
     }
   }
 

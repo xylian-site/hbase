@@ -114,6 +114,9 @@ public class HTable implements Table {
   private final int rpcTimeoutMs; // FIXME we should use this for rpc like batch and checkAndXXX
   private int readRpcTimeoutMs; // timeout for each read rpc request
   private int writeRpcTimeoutMs; // timeout for each write rpc request
+
+  private final int scanReadRpcTimeout;
+  private final int scanTimeout;
   private final boolean cleanupPoolOnClose; // shutdown the pool in close()
   private final HRegionLocator locator;
 
@@ -187,6 +190,8 @@ public class HTable implements Table {
     this.rpcTimeoutMs = builder.rpcTimeout;
     this.readRpcTimeoutMs = builder.readRpcTimeout;
     this.writeRpcTimeoutMs = builder.writeRpcTimeout;
+    this.scanReadRpcTimeout = builder.scanReadRpcTimeout;
+    this.scanTimeout = builder.scanTimeout;
     this.scannerCaching = connConfiguration.getScannerCaching();
     this.scannerMaxResultSize = connConfiguration.getScannerMaxResultSize();
 
@@ -306,24 +311,24 @@ public class HTable implements Table {
       // it is not supposed to be set by user, clear
       scan.resetMvccReadPoint();
     }
-    Boolean async = scan.isAsyncPrefetch();
-    if (async == null) {
-      async = connConfiguration.isClientScannerAsyncPrefetch();
-    }
+    final boolean async = scan.isAsyncPrefetch() != null
+      ? scan.isAsyncPrefetch()
+      : connConfiguration.isClientScannerAsyncPrefetch();
+    final int replicaTimeout = connConfiguration.getReplicaCallTimeoutMicroSecondScan();
 
     if (scan.isReversed()) {
-      return new ReversedClientScanner(getConfiguration(), scan, getName(),
-        this.connection, this.rpcCallerFactory, this.rpcControllerFactory,
-        pool, connConfiguration.getReplicaCallTimeoutMicroSecondScan());
+      return new ReversedClientScanner(getConfiguration(), scan, getName(), connection,
+        rpcCallerFactory, rpcControllerFactory, pool, scanReadRpcTimeout, scanTimeout,
+        replicaTimeout);
     } else {
       if (async) {
-        return new ClientAsyncPrefetchScanner(getConfiguration(), scan, getName(), this.connection,
-            this.rpcCallerFactory, this.rpcControllerFactory,
-            pool, connConfiguration.getReplicaCallTimeoutMicroSecondScan());
+        return new ClientAsyncPrefetchScanner(getConfiguration(), scan, getName(), connection,
+          rpcCallerFactory, rpcControllerFactory, pool, scanReadRpcTimeout, scanTimeout,
+          replicaTimeout);
       } else {
-        return new ClientSimpleScanner(getConfiguration(), scan, getName(), this.connection,
-            this.rpcCallerFactory, this.rpcControllerFactory,
-            pool, connConfiguration.getReplicaCallTimeoutMicroSecondScan());
+        return new ClientSimpleScanner(getConfiguration(), scan, getName(), connection,
+          rpcCallerFactory, rpcControllerFactory, pool, scanReadRpcTimeout, scanTimeout,
+          replicaTimeout);
       }
     }
   }
