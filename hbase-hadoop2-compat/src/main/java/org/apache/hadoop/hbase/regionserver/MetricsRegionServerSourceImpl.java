@@ -488,112 +488,119 @@ public class MetricsRegionServerSourceImpl
 
   private MetricsRecordBuilder addGaugesToMetricsRecordBuilder(MetricsRecordBuilder mrb) {
     return mrb.addGauge(Interns.info(REGION_COUNT, REGION_COUNT_DESC), rsWrap.getNumOnlineRegions())
-            .addGauge(Interns.info(STORE_COUNT, STORE_COUNT_DESC), rsWrap.getNumStores())
-            .addGauge(Interns.info(WALFILE_COUNT, WALFILE_COUNT_DESC), rsWrap.getNumWALFiles())
-            .addGauge(Interns.info(WALFILE_SIZE, WALFILE_SIZE_DESC), rsWrap.getWALFileSize())
-            .addGauge(Interns.info(STOREFILE_COUNT, STOREFILE_COUNT_DESC),
-                    rsWrap.getNumStoreFiles())
-            .addGauge(Interns.info(MEMSTORE_SIZE, MEMSTORE_SIZE_DESC), rsWrap.getMemStoreSize())
-            .addGauge(Interns.info(STOREFILE_SIZE, STOREFILE_SIZE_DESC), rsWrap.getStoreFileSize())
-            .addGauge(Interns.info(MAX_STORE_FILE_AGE, MAX_STORE_FILE_AGE_DESC),
-                    rsWrap.getMaxStoreFileAge())
-            .addGauge(Interns.info(MIN_STORE_FILE_AGE, MIN_STORE_FILE_AGE_DESC),
-                    rsWrap.getMinStoreFileAge())
-            .addGauge(Interns.info(AVG_STORE_FILE_AGE, AVG_STORE_FILE_AGE_DESC),
-                    rsWrap.getAvgStoreFileAge())
-            .addGauge(Interns.info(NUM_REFERENCE_FILES, NUM_REFERENCE_FILES_DESC),
-                    rsWrap.getNumReferenceFiles())
-            .addGauge(Interns.info(RS_START_TIME_NAME, RS_START_TIME_DESC), rsWrap.getStartCode())
-            .addGauge(Interns.info(AVERAGE_REGION_SIZE, AVERAGE_REGION_SIZE_DESC),
-                    rsWrap.getAverageRegionSize())
-            .addGauge(Interns.info(STOREFILE_INDEX_SIZE, STOREFILE_INDEX_SIZE_DESC),
-                    rsWrap.getStoreFileIndexSize())
-            .addGauge(Interns.info(STATIC_INDEX_SIZE, STATIC_INDEX_SIZE_DESC),
-                    rsWrap.getTotalStaticIndexSize())
-            .addGauge(Interns.info(STATIC_BLOOM_SIZE, STATIC_BLOOM_SIZE_DESC),
-                    rsWrap.getTotalStaticBloomSize())
-            .addGauge(Interns.info(NUMBER_OF_MUTATIONS_WITHOUT_WAL,
-                    NUMBER_OF_MUTATIONS_WITHOUT_WAL_DESC), rsWrap.getNumMutationsWithoutWAL())
-            .addGauge(Interns.info(DATA_SIZE_WITHOUT_WAL, DATA_SIZE_WITHOUT_WAL_DESC),
-                    rsWrap.getDataInMemoryWithoutWAL())
-            .addGauge(Interns.info(PERCENT_FILES_LOCAL, PERCENT_FILES_LOCAL_DESC),
-                    rsWrap.getPercentFileLocal())
-            .addGauge(Interns.info(PERCENT_FILES_LOCAL_SECONDARY_REGIONS,
-                    PERCENT_FILES_LOCAL_SECONDARY_REGIONS_DESC),
-                    rsWrap.getPercentFileLocalSecondaryRegions())
-            .addGauge(Interns.info(TOTAL_BYTES_READ,
-                    TOTAL_BYTES_READ_DESC),
-                    rsWrap.getTotalBytesRead())
-            .addGauge(Interns.info(LOCAL_BYTES_READ,
-                    LOCAL_BYTES_READ_DESC),
-                    rsWrap.getLocalBytesRead())
-            .addGauge(Interns.info(SHORTCIRCUIT_BYTES_READ,
-                    SHORTCIRCUIT_BYTES_READ_DESC),
-                    rsWrap.getShortCircuitBytesRead())
-            .addGauge(Interns.info(ZEROCOPY_BYTES_READ,
-                    ZEROCOPY_BYTES_READ_DESC),
-                    rsWrap.getZeroCopyBytesRead())
-            .addGauge(Interns.info(SPLIT_QUEUE_LENGTH, SPLIT_QUEUE_LENGTH_DESC),
-                    rsWrap.getSplitQueueSize())
-            .addGauge(Interns.info(COMPACTION_QUEUE_LENGTH, COMPACTION_QUEUE_LENGTH_DESC),
-                    rsWrap.getCompactionQueueSize())
-            .addGauge(Interns.info(SMALL_COMPACTION_QUEUE_LENGTH,
-                    SMALL_COMPACTION_QUEUE_LENGTH_DESC), rsWrap.getSmallCompactionQueueSize())
-            .addGauge(Interns.info(LARGE_COMPACTION_QUEUE_LENGTH,
-                    LARGE_COMPACTION_QUEUE_LENGTH_DESC), rsWrap.getLargeCompactionQueueSize())
-            .addGauge(Interns.info(FLUSH_QUEUE_LENGTH, FLUSH_QUEUE_LENGTH_DESC),
-                    rsWrap.getFlushQueueSize())
-            .addGauge(Interns.info(BLOCK_CACHE_FREE_SIZE, BLOCK_CACHE_FREE_DESC),
-                    rsWrap.getBlockCacheFreeSize())
-            .addGauge(Interns.info(BLOCK_CACHE_COUNT, BLOCK_CACHE_COUNT_DESC),
-                    rsWrap.getBlockCacheCount())
-            .addGauge(Interns.info(BLOCK_CACHE_SIZE, BLOCK_CACHE_SIZE_DESC),
-                    rsWrap.getBlockCacheSize())
-            .addGauge(Interns.info(BLOCK_CACHE_HIT_PERCENT, BLOCK_CACHE_HIT_PERCENT_DESC),
-                    rsWrap.getBlockCacheHitPercent())
-            .addGauge(Interns.info(BLOCK_CACHE_EXPRESS_HIT_PERCENT,
-                    BLOCK_CACHE_EXPRESS_HIT_PERCENT_DESC), rsWrap.getBlockCacheHitCachingPercent())
-            .addGauge(Interns.info(L1_CACHE_HIT_COUNT, L1_CACHE_HIT_COUNT_DESC),
-                    rsWrap.getL1CacheHitCount())
-            .addGauge(Interns.info(L1_CACHE_MISS_COUNT, L1_CACHE_MISS_COUNT_DESC),
-                    rsWrap.getL1CacheMissCount())
-            .addGauge(Interns.info(L1_CACHE_HIT_RATIO, L1_CACHE_HIT_RATIO_DESC),
-                    rsWrap.getL1CacheHitRatio())
-            .addGauge(Interns.info(L1_CACHE_MISS_RATIO, L1_CACHE_MISS_RATIO_DESC),
-                    rsWrap.getL1CacheMissRatio())
-            .addGauge(Interns.info(L2_CACHE_HIT_COUNT, L2_CACHE_HIT_COUNT_DESC),
-                    rsWrap.getL2CacheHitCount())
-            .addGauge(Interns.info(L2_CACHE_MISS_COUNT, L2_CACHE_MISS_COUNT_DESC),
-                    rsWrap.getL2CacheMissCount())
-            .addGauge(Interns.info(L2_CACHE_HIT_RATIO, L2_CACHE_HIT_RATIO_DESC),
-                    rsWrap.getL2CacheHitRatio())
-            .addGauge(Interns.info(L2_CACHE_MISS_RATIO, L2_CACHE_MISS_RATIO_DESC),
-                    rsWrap.getL2CacheMissRatio())
-            .addGauge(Interns.info(MOB_FILE_CACHE_COUNT, MOB_FILE_CACHE_COUNT_DESC),
-                    rsWrap.getMobFileCacheCount())
-            .addGauge(Interns.info(MOB_FILE_CACHE_HIT_PERCENT, MOB_FILE_CACHE_HIT_PERCENT_DESC),
-                    rsWrap.getMobFileCacheHitPercent())
-            .addGauge(Interns.info(READ_REQUEST_RATE_PER_SECOND, READ_REQUEST_RATE_DESC),
-                    rsWrap.getReadRequestsRatePerSecond())
-            .addGauge(Interns.info(WRITE_REQUEST_RATE_PER_SECOND, WRITE_REQUEST_RATE_DESC),
-                    rsWrap.getWriteRequestsRatePerSecond())
-            .addGauge(Interns.info(BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_BYTES,
-                  BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_BYTES_DESC),
-                rsWrap.getByteBuffAllocatorHeapAllocationBytes())
-            .addGauge(Interns.info(BYTE_BUFF_ALLOCATOR_POOL_ALLOCATION_BYTES,
-                  BYTE_BUFF_ALLOCATOR_POOL_ALLOCATION_BYTES_DESC),
-                rsWrap.getByteBuffAllocatorPoolAllocationBytes())
-            .addGauge(Interns.info(BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_RATIO,
-                  BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_RATIO_DESC),
-                rsWrap.getByteBuffAllocatorHeapAllocRatio())
-            .addGauge(Interns.info(BYTE_BUFF_ALLOCATOR_TOTAL_BUFFER_COUNT,
-                BYTE_BUFF_ALLOCATOR_TOTAL_BUFFER_COUNT_DESC),
-                rsWrap.getByteBuffAllocatorTotalBufferCount())
-            .addGauge(Interns.info(BYTE_BUFF_ALLOCATOR_USED_BUFFER_COUNT,
-                BYTE_BUFF_ALLOCATOR_USED_BUFFER_COUNT_DESC),
-                rsWrap.getByteBuffAllocatorUsedBufferCount())
-            .addGauge(Interns.info(ACTIVE_SCANNERS, ACTIVE_SCANNERS_DESC),
-                rsWrap.getActiveScanners());
+      .addGauge(Interns.info(STORE_COUNT, STORE_COUNT_DESC), rsWrap.getNumStores())
+      .addGauge(Interns.info(WALFILE_COUNT, WALFILE_COUNT_DESC), rsWrap.getNumWALFiles())
+      .addGauge(Interns.info(WALFILE_SIZE, WALFILE_SIZE_DESC), rsWrap.getWALFileSize())
+      .addGauge(Interns.info(STOREFILE_COUNT, STOREFILE_COUNT_DESC), rsWrap.getNumStoreFiles())
+      .addGauge(Interns.info(MEMSTORE_SIZE, MEMSTORE_SIZE_DESC), rsWrap.getMemStoreSize())
+      .addGauge(Interns.info(STOREFILE_SIZE, STOREFILE_SIZE_DESC), rsWrap.getStoreFileSize())
+      .addGauge(Interns.info(MAX_STORE_FILE_AGE, MAX_STORE_FILE_AGE_DESC),
+        rsWrap.getMaxStoreFileAge())
+      .addGauge(Interns.info(MIN_STORE_FILE_AGE, MIN_STORE_FILE_AGE_DESC),
+        rsWrap.getMinStoreFileAge())
+      .addGauge(Interns.info(AVG_STORE_FILE_AGE, AVG_STORE_FILE_AGE_DESC),
+        rsWrap.getAvgStoreFileAge())
+      .addGauge(Interns.info(NUM_REFERENCE_FILES, NUM_REFERENCE_FILES_DESC),
+        rsWrap.getNumReferenceFiles())
+      .addGauge(Interns.info(RS_START_TIME_NAME, RS_START_TIME_DESC), rsWrap.getStartCode())
+      .addGauge(Interns.info(AVERAGE_REGION_SIZE, AVERAGE_REGION_SIZE_DESC),
+        rsWrap.getAverageRegionSize())
+      .addGauge(Interns.info(STOREFILE_INDEX_SIZE, STOREFILE_INDEX_SIZE_DESC),
+        rsWrap.getStoreFileIndexSize())
+      .addGauge(Interns.info(STATIC_INDEX_SIZE, STATIC_INDEX_SIZE_DESC),
+        rsWrap.getTotalStaticIndexSize())
+      .addGauge(Interns.info(STATIC_BLOOM_SIZE, STATIC_BLOOM_SIZE_DESC),
+        rsWrap.getTotalStaticBloomSize())
+      .addGauge(Interns.info(NUMBER_OF_MUTATIONS_WITHOUT_WAL, NUMBER_OF_MUTATIONS_WITHOUT_WAL_DESC),
+        rsWrap.getNumMutationsWithoutWAL())
+      .addGauge(Interns.info(DATA_SIZE_WITHOUT_WAL, DATA_SIZE_WITHOUT_WAL_DESC),
+        rsWrap.getDataInMemoryWithoutWAL())
+      .addGauge(Interns.info(PERCENT_FILES_LOCAL, PERCENT_FILES_LOCAL_DESC),
+        rsWrap.getPercentFileLocal())
+      .addGauge(Interns.info(PERCENT_FILES_LOCAL_SECONDARY_REGIONS,
+        PERCENT_FILES_LOCAL_SECONDARY_REGIONS_DESC), rsWrap.getPercentFileLocalSecondaryRegions())
+      .addGauge(Interns.info(TOTAL_BYTES_READ, TOTAL_BYTES_READ_DESC), rsWrap.getTotalBytesRead())
+      .addGauge(Interns.info(LOCAL_BYTES_READ, LOCAL_BYTES_READ_DESC), rsWrap.getLocalBytesRead())
+      .addGauge(Interns.info(SHORTCIRCUIT_BYTES_READ, SHORTCIRCUIT_BYTES_READ_DESC),
+        rsWrap.getShortCircuitBytesRead())
+      .addGauge(Interns.info(ZEROCOPY_BYTES_READ, ZEROCOPY_BYTES_READ_DESC),
+        rsWrap.getZeroCopyBytesRead())
+      .addGauge(Interns.info(SPLIT_QUEUE_LENGTH, SPLIT_QUEUE_LENGTH_DESC),
+        rsWrap.getSplitQueueSize())
+      .addGauge(Interns.info(COMPACTION_QUEUE_LENGTH, COMPACTION_QUEUE_LENGTH_DESC),
+        rsWrap.getCompactionQueueSize())
+      .addGauge(Interns.info(SMALL_COMPACTION_QUEUE_LENGTH, SMALL_COMPACTION_QUEUE_LENGTH_DESC),
+        rsWrap.getSmallCompactionQueueSize())
+      .addGauge(Interns.info(LARGE_COMPACTION_QUEUE_LENGTH, LARGE_COMPACTION_QUEUE_LENGTH_DESC),
+        rsWrap.getLargeCompactionQueueSize())
+      .addGauge(Interns.info(FLUSH_QUEUE_LENGTH, FLUSH_QUEUE_LENGTH_DESC),
+        rsWrap.getFlushQueueSize())
+      .addGauge(Interns.info(BLOCK_CACHE_FREE_SIZE, BLOCK_CACHE_FREE_DESC),
+        rsWrap.getBlockCacheFreeSize())
+      .addGauge(Interns.info(BLOCK_CACHE_COUNT, BLOCK_CACHE_COUNT_DESC),
+        rsWrap.getBlockCacheCount())
+      .addGauge(Interns.info(BLOCK_CACHE_DATA_BLOCK_COUNT, BLOCK_CACHE_DATA_BLOCK_COUNT_DESC),
+        rsWrap.getBlockCacheDataBlockCount())
+      .addGauge(Interns.info(BLOCK_CACHE_SIZE, BLOCK_CACHE_SIZE_DESC), rsWrap.getBlockCacheSize())
+      .addGauge(Interns.info(BLOCK_CACHE_HIT_PERCENT, BLOCK_CACHE_HIT_PERCENT_DESC),
+        rsWrap.getBlockCacheHitPercent())
+      .addGauge(Interns.info(BLOCK_CACHE_EXPRESS_HIT_PERCENT, BLOCK_CACHE_EXPRESS_HIT_PERCENT_DESC),
+        rsWrap.getBlockCacheHitCachingPercent())
+      .addGauge(Interns.info(L1_CACHE_SIZE, L1_CACHE_SIZE_DESC), rsWrap.getL1CacheSize())
+      .addGauge(Interns.info(L1_CACHE_FREE_SIZE, L1_CACHE_FREE_SIZE_DESC),
+        rsWrap.getL1CacheFreeSize())
+      .addGauge(Interns.info(L1_CACHE_COUNT, L1_CACHE_COUNT_DESC), rsWrap.getL1CacheCount())
+      .addCounter(Interns.info(L1_CACHE_EVICTION_COUNT, L1_CACHE_EVICTION_COUNT_DESC),
+        rsWrap.getL1CacheEvictedCount())
+      .addGauge(Interns.info(L1_CACHE_HIT_COUNT, L1_CACHE_HIT_COUNT_DESC),
+        rsWrap.getL1CacheHitCount())
+      .addGauge(Interns.info(L1_CACHE_MISS_COUNT, L1_CACHE_MISS_COUNT_DESC),
+        rsWrap.getL1CacheMissCount())
+      .addGauge(Interns.info(L1_CACHE_HIT_RATIO, L1_CACHE_HIT_RATIO_DESC),
+        rsWrap.getL1CacheHitRatio())
+      .addGauge(Interns.info(L1_CACHE_MISS_RATIO, L1_CACHE_MISS_RATIO_DESC),
+        rsWrap.getL1CacheMissRatio())
+      .addGauge(Interns.info(L2_CACHE_SIZE, L2_CACHE_SIZE_DESC), rsWrap.getL2CacheSize())
+      .addGauge(Interns.info(L2_CACHE_FREE_SIZE, L2_CACHE_FREE_SIZE_DESC),
+        rsWrap.getL2CacheFreeSize())
+      .addGauge(Interns.info(L2_CACHE_COUNT, L2_CACHE_COUNT_DESC), rsWrap.getL2CacheCount())
+      .addCounter(Interns.info(L2_CACHE_EVICTION_COUNT, L2_CACHE_EVICTION_COUNT_DESC),
+        rsWrap.getL2CacheEvictedCount())
+      .addGauge(Interns.info(L2_CACHE_HIT_COUNT, L2_CACHE_HIT_COUNT_DESC),
+        rsWrap.getL2CacheHitCount())
+      .addGauge(Interns.info(L2_CACHE_MISS_COUNT, L2_CACHE_MISS_COUNT_DESC),
+        rsWrap.getL2CacheMissCount())
+      .addGauge(Interns.info(L2_CACHE_HIT_RATIO, L2_CACHE_HIT_RATIO_DESC),
+        rsWrap.getL2CacheHitRatio())
+      .addGauge(Interns.info(L2_CACHE_MISS_RATIO, L2_CACHE_MISS_RATIO_DESC),
+        rsWrap.getL2CacheMissRatio())
+      .addGauge(Interns.info(MOB_FILE_CACHE_COUNT, MOB_FILE_CACHE_COUNT_DESC),
+        rsWrap.getMobFileCacheCount())
+      .addGauge(Interns.info(MOB_FILE_CACHE_HIT_PERCENT, MOB_FILE_CACHE_HIT_PERCENT_DESC),
+        rsWrap.getMobFileCacheHitPercent())
+      .addGauge(Interns.info(READ_REQUEST_RATE_PER_SECOND, READ_REQUEST_RATE_DESC),
+        rsWrap.getReadRequestsRatePerSecond())
+      .addGauge(Interns.info(WRITE_REQUEST_RATE_PER_SECOND, WRITE_REQUEST_RATE_DESC),
+        rsWrap.getWriteRequestsRatePerSecond())
+      .addGauge(
+        Interns.info(BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_BYTES,
+          BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_BYTES_DESC),
+        rsWrap.getByteBuffAllocatorHeapAllocationBytes())
+      .addGauge(
+        Interns.info(BYTE_BUFF_ALLOCATOR_POOL_ALLOCATION_BYTES,
+          BYTE_BUFF_ALLOCATOR_POOL_ALLOCATION_BYTES_DESC),
+        rsWrap.getByteBuffAllocatorPoolAllocationBytes())
+      .addGauge(
+        Interns.info(BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_RATIO,
+          BYTE_BUFF_ALLOCATOR_HEAP_ALLOCATION_RATIO_DESC),
+        rsWrap.getByteBuffAllocatorHeapAllocRatio())
+      .addGauge(
+        Interns.info(BYTE_BUFF_ALLOCATOR_TOTAL_BUFFER_COUNT,
+          BYTE_BUFF_ALLOCATOR_TOTAL_BUFFER_COUNT_DESC),
+        rsWrap.getByteBuffAllocatorTotalBufferCount())
+      .addGauge(Interns.info(BYTE_BUFF_ALLOCATOR_USED_BUFFER_COUNT,
+        BYTE_BUFF_ALLOCATOR_USED_BUFFER_COUNT_DESC), rsWrap.getByteBuffAllocatorUsedBufferCount())
+      .addGauge(Interns.info(ACTIVE_SCANNERS, ACTIVE_SCANNERS_DESC), rsWrap.getActiveScanners());
   }
 
   @Override
