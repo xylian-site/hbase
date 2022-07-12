@@ -84,6 +84,11 @@ public class MetricsTableWrapperStub implements MetricsTableWrapperAggregate {
   }
 
   @Override
+  public long getMaxStoreFiles(String table) {
+    return 8;
+  }
+
+  @Override
   public long getMaxStoreFileAge(String table) {
     return 44;
   }

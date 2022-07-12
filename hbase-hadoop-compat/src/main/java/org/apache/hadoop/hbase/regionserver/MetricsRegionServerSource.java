@@ -594,7 +594,9 @@ public interface MetricsRegionServerSource extends BaseSource, JvmPauseMonitorSo
       "Number of rpc multi requests this RegionServer has answered.";
   String RPC_MUTATE_REQUEST_COUNT = "rpcMutateRequestCount";
   String RPC_MUTATE_REQUEST_COUNT_DESC =
-      "Number of rpc mutation requests this RegionServer has answered.";
+    "Number of rpc mutation requests this RegionServer has answered.";
+  String MAX_STOREFILE_COUNT = "maxStoreFileCount";
+  String MAX_STOREFILE_COUNT_DESC = "Max store file count across all regions";
   String AVERAGE_REGION_SIZE = "averageRegionSize";
   String AVERAGE_REGION_SIZE_DESC =
       "Average region size over the RegionServer including memstore and storefile sizes.";
