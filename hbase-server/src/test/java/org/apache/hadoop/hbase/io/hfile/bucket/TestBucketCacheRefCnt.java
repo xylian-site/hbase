@@ -554,10 +554,10 @@ public class TestBucketCacheRefCnt {
     }
 
     @Override
-    void blockEvicted(BlockCacheKey cacheKey, BucketEntry bucketEntry,
-        boolean decrementBlockNumber) {
+    void blockEvicted(BlockCacheKey cacheKey, BucketEntry bucketEntry, boolean decrementBlockNumber,
+      boolean evictedByEvictionProcess) {
       blockEvictCounter.incrementAndGet();
-      super.blockEvicted(cacheKey, bucketEntry, decrementBlockNumber);
+      super.blockEvicted(cacheKey, bucketEntry, decrementBlockNumber, evictedByEvictionProcess);
     }
 
     /**
@@ -706,8 +706,8 @@ public class TestBucketCacheRefCnt {
     }
 
     @Override
-    void blockEvicted(BlockCacheKey cacheKey, BucketEntry bucketEntry,
-        boolean decrementBlockNumber) {
+    void blockEvicted(BlockCacheKey cacheKey, BucketEntry bucketEntry, boolean decrementBlockNumber,
+      boolean evictedByEvictionProcess) {
       /**
        * This is only invoked by {@link BucketCache.WriterThread}. {@link MyMyBucketCache2} create
        * only one {@link BucketCache.WriterThread}.
@@ -715,7 +715,7 @@ public class TestBucketCacheRefCnt {
       assertTrue(Thread.currentThread() == this.writerThreads[0]);
 
       blockEvictCounter.incrementAndGet();
-      super.blockEvicted(cacheKey, bucketEntry, decrementBlockNumber);
+      super.blockEvicted(cacheKey, bucketEntry, decrementBlockNumber, evictedByEvictionProcess);
     }
 
     /**
