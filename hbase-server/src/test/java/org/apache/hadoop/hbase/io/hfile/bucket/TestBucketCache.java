@@ -57,6 +57,7 @@ import org.apache.hadoop.hbase.io.hfile.bucket.BucketCache.RAMQueueEntry;
 import org.apache.hadoop.hbase.nio.ByteBuff;
 import org.apache.hadoop.hbase.testclassification.IOTests;
 import org.apache.hadoop.hbase.testclassification.LargeTests;
+import org.apache.hadoop.hbase.util.Pair;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -161,7 +162,7 @@ public class TestBucketCache {
     final List<Integer> BLOCKSIZES = Arrays.asList(4 * 1024, 8 * 1024, 64 * 1024, 96 * 1024);
 
     boolean full = false;
-    ArrayList<Long> allocations = new ArrayList<>();
+    ArrayList<Pair<Long, Integer>> allocations = new ArrayList<>();
     // Fill the allocated extents by choosing a random blocksize. Continues selecting blocks until
     // the cache is completely filled.
     List<Integer> tmp = new ArrayList<>(BLOCKSIZES);
@@ -169,7 +170,7 @@ public class TestBucketCache {
       Integer blockSize = null;
       try {
         blockSize = randFrom(tmp);
-        allocations.add(mAllocator.allocateBlock(blockSize));
+        allocations.add(new Pair<>(mAllocator.allocateBlock(blockSize), blockSize));
       } catch (CacheFullException cfe) {
         tmp.remove(blockSize);
         if (tmp.isEmpty()) full = true;
@@ -180,12 +181,19 @@ public class TestBucketCache {
       BucketSizeInfo bucketSizeInfo = mAllocator.roundUpToBucketSizeInfo(blockSize);
       IndexStatistics indexStatistics = bucketSizeInfo.statistics();
       assertEquals("unexpected freeCount for " + bucketSizeInfo, 0, indexStatistics.freeCount());
+
+      // we know the block sizes above are multiples of 1024, but default bucket sizes give an
+      // additional 1024 on top of that so this counts towards fragmentation in our test
+      // real life may have worse fragmentation because blocks may not be perfectly sized to block
+      // size, given encoding/compression and large rows
+      assertEquals(1024 * indexStatistics.totalCount(), indexStatistics.fragmentationBytes());
     }
 
     mAllocator.logDebugStatistics();
 
-    for (long offset : allocations) {
-      assertEquals(mAllocator.sizeOfAllocation(offset), mAllocator.freeBlock(offset));
+    for (Pair<Long, Integer> allocation : allocations) {
+      assertEquals(mAllocator.sizeOfAllocation(allocation.getFirst()),
+        mAllocator.freeBlock(allocation.getFirst(), allocation.getSecond()));
     }
     assertEquals(0, mAllocator.getUsedSize());
   }
