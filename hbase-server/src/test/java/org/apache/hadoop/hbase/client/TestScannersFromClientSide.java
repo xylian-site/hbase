@@ -28,6 +28,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import edu.illinois.ParameterizedWithCartesian;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +83,7 @@ import org.apache.hbase.thirdparty.com.google.common.base.Preconditions;
  * registry implementations.
  */
 @Category({ MediumTests.class, ClientTests.class })
-@RunWith(Parameterized.class)
+@RunWith(ParameterizedWithCartesian.class)
 public class TestScannersFromClientSide {
 
   @ClassRule
@@ -117,7 +119,7 @@ public class TestScannersFromClientSide {
     // Nothing to do.
   }
 
-  @Parameterized.Parameters
+  @ParameterizedWithCartesian.Parameters
   public static Collection<Object[]> parameters() {
     return Arrays.asList(new Object[][] { { MasterRegistry.class, 1 }, { MasterRegistry.class, 2 },
       { ZKConnectionRegistry.class, 1 } });
