@@ -1546,6 +1546,12 @@
          Cannot undo though because build runs test on each module and
          it fails if no junit. TODO. -->
     <dependency>
+      <groupId>edu.illinois</groupId>
+      <artifactId>ParameterizedWithCartesian</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>

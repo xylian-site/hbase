@@ -23,6 +23,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import edu.illinois.ParameterizedWithCartesian;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -68,7 +70,7 @@ import org.apache.hadoop.hbase.shaded.protobuf.generated.MasterProtos;
  * Regions that were on the server-to-process rather than consult Master in-memory-state.
  */
 @Category({ MasterTests.class, LargeTests.class })
-@RunWith(Parameterized.class)
+@RunWith(ParameterizedWithCartesian.class)
 public class TestHBCKSCP extends TestSCPBase {
   private static final Logger LOG = LoggerFactory.getLogger(TestHBCKSCP.class);
 
@@ -89,7 +91,7 @@ public class TestHBCKSCP extends TestSCPBase {
     this.regionSelector = regionSelector;
   }
 
-  @Parameterized.Parameters(name = "replicas:{0} scheduler:{1} selector:{2}")
+  @ParameterizedWithCartesian.Parameters
   public static Object[][] params() {
     return new Object[][] {
       { 1, new ScheduleServerCrashProcedure(), new PrimaryNotMetaRegionSelector() },
